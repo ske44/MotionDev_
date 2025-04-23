@@ -1,93 +1,40 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Minecraft Studio</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f7fa; /* Голубой фон */
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+<?php 
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+require 'routing.php';
+require 'config.php';
 
-        header {
-            background-color: #0277bd; /* Глубокий синий */
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+$conn = mysqli_connect($host, $login, $pass, $db);
 
-        section {
-            padding: 40px;
-        }
+if (!isset($conn)) {
+	die("Ошибка подключения к базе данных.");
+}
 
-        h1, h2 {
-            color: #01579b; /* Темно-синий */
-        }
+$sql = "SELECT * FROM static";
 
-        .feature {
-            background-color: #b3e5fc; /* Светлый голубой */
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
+$url = key($_GET);
 
-        .feature h3 {
-            margin-top: 0;
-        }
+$r = new Router();
 
-        footer {
-            background-color: #0277bd;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
+$r->addRoute("/", "main.php");
+$r->addRoute("/rules", "rules.php");
+$r->addRoute("/donate", "donate.php");
+$r->addRoute("/play", "play.php");
+$r->addRoute("/oferta", "oferta.php");
+$r->addRoute("/privacy", "privacy.php");
+$r->addRoute("/buy", "buy.php");
+$r->addRoute("/pay", "pay.php");
+$r->addRoute("/succes", "succes.php");
+$r->addRoute("/fail", "fail.php");
+$r->addRoute("/error", "error.php");
+if($result = $conn->query($sql)){
+    foreach($result as $row){
+    	$r->addRoute("/".$row['name'], "static".$row['page'].".php");
+    }
+}
 
-        a {
-            color: #0288d1;
-            text-decoration: none;
-        }
+$r->route("/".$url);
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+?>
 
-<header>
-    <h1>Minecraft Studio</h1>
-    <p>Создание и разработка уникальных сборок для серверов Minecraft</p>
-</header>
-
-<section>
-    <h2>Наши Услуги</h2>
-    <div class="feature">
-        <h3>Индивидуальные сборки</h3>
-        <p>Мы создаем кастомные сборки серверов для Minecraft, идеально подходящие для вашей игры.</p>
-    </div>
-
-    <div class="feature">
-        <h3>Оптимизация серверов</h3>
-        <p>Мы поможем вам настроить сервер для лучшей производительности и стабильности.</p>
-    </div>
-
-    <div class="feature">
-        <h3>Поддержка и обновления</h3>
-        <p>Мы предлагаем постоянную техническую поддержку и регулярные обновления для вашего сервера.</p>
-    </div>
-</section>
-
-<footer>
-    <p>&copy; 2025 Minecraft Studio | <a href="mailto:info@mcstudio.com">Контакты</a></p>
-</footer>
-
-</body>
-</html>
